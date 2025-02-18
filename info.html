@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Meme</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0; /* Light gray background */
+        }
+
+        #meme-container {
+            width: 500px; /* Standard width - adjust as needed */
+            max-width: 90%; /* Responsive for smaller screens */
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+            border-radius: 8px; /* Rounded corners */
+            overflow: hidden; /* Prevents image overflow */
+        }
+
+        #meme-image {
+            width: 100%;
+            display: block; /* Prevents small space below image */
+        }
+
+        #meme-text {
+            padding: 15px;
+            background-color: white; /* White background for text */
+            text-align: center;
+            border-top: 1px solid #ddd; /* Light separator line */
+        }
+
+        #drive-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50; /* Green button */
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        #drive-link:hover {
+            background-color: #45a049;
+        }
+
+        /* Basic responsive adjustments */
+        @media (max-width: 600px) {
+            #meme-container {
+                width: 90%; /* Full width on smaller screens */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="meme-container">
+        <img id="meme-image" src="" alt="Daily Meme">
+        <div id="meme-text"></div>
+    </div>
+
+    <a id="drive-link" href="" target="_blank">Open in Google Drive</a>
+
+    <script>
+        const memeImage = document.getElementById('meme-image');
+        const memeText = document.getElementById('meme-text');
+        const driveLink = document.getElementById('drive-link');
+
+        // Sample data - replace with your actual data fetching method
+        const memeData = fetch('meme_data.json') // Path to your JSON file
+          .then(response => response.json())
+          .then(data => {
+                memeImage.src = data.imageUrl;
+                memeText.textContent = data.text;
+                driveLink.href = data.driveUrl;
+            })
+          .catch(error => console.error('Error fetching data:', error));
+
+        // Set the content
+        memeImage.src = memeData.imageUrl;
+        memeText.textContent = memeData.text;
+        driveLink.href = memeData.driveUrl;
+
+    </script>
+
+</body>
+</html>
