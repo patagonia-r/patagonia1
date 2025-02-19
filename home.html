@@ -94,7 +94,7 @@
         fetch('youtube_id.txt')
             .then(response => response.text())
             .then(youtubeId => {
-                videoIframe.src = `https://www.youtube.com/embed/$${youtubeId.trim()}`; // Trim whitespace
+                videoIframe.src = `https://www.youtube-nocookie.com/embed/${youtubeId.trim()}`; // Trim whitespace
             })
             .catch(error => console.error('Error loading youtube_id.txt:', error));
 
