@@ -83,7 +83,7 @@
         fetch('youtube_id.txt')
             .then(response => response.text())
             .then(youtubeId => {
-                videoIframe.src = `https://www.youtube.com/embed/$${youtubeId.trim()}`;
+                videoIframe.src = `https://www.youtube.com/embed/${youtubeId.trim()}`;
             })
             .catch(error => console.error('Error loading youtube_id.txt:', error));
 
