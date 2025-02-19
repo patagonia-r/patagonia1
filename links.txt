@@ -1,0 +1,3 @@
+https://www.google.com|Google
+https://www.wikipedia.org|Wikipedia
+https://www.youtube.com|YouTube

@@ -3,89 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Meme</title>
+    <title>Daily Content</title>
     <style>
         body {
             font-family: sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-start; /* Align to top */
             min-height: 100vh;
             margin: 0;
-            background-color: #f0f0f0; /* Light gray background */
+            background-color: #f0f0f0;
+            padding-top: 20px; /* Add some top padding */
         }
 
-        #meme-container {
-            width: 500px; /* Standard width - adjust as needed */
-            max-width: 90%; /* Responsive for smaller screens */
-            margin-bottom: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-            border-radius: 8px; /* Rounded corners */
-            overflow: hidden; /* Prevents image overflow */
+        #content-container {
+            width: 80%; /* Adjust width as needed */
+            max-width: 900px;
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
         }
 
-        #meme-image {
+        #video-container {
+            width: 560px;
+            max-width: 100%; /* Make video container responsive */
+            margin: 0 auto 20px; /* Center and add margin below */
+            overflow: hidden;
+        }
+
+        #video-iframe {
             width: 100%;
-            display: block; /* Prevents small space below image */
+            height: 315px;
+            border: none;
         }
 
-        #meme-text {
-            padding: 15px;
-            background-color: white; /* White background for text */
-            text-align: center;
-            border-top: 1px solid #ddd; /* Light separator line */
+        .text-paragraph {
+            margin-bottom: 15px;
         }
 
-        #drive-link {
-            display: inline-block;
-            padding: 10px 20px;
-            background-color: #4CAF50; /* Green button */
-            color: white;
+        .link-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .link-list li {
+            margin-bottom: 10px;
+        }
+
+        .link-list a {
+            color: #007bff; /* Blue link color */
             text-decoration: none;
-            border-radius: 5px;
-            margin-top: 10px;
         }
-        #drive-link:hover {
-            background-color: #45a049;
+        .link-list a:hover {
+            text-decoration: underline;
         }
 
-        /* Basic responsive adjustments */
-        @media (max-width: 600px) {
-            #meme-container {
-                width: 90%; /* Full width on smaller screens */
-            }
-        }
+
     </style>
 </head>
 <body>
 
-    <div id="meme-container">
-        <img id="meme-image" src="" alt="Daily Meme">
-        <div id="meme-text"></div>
+    <div id="content-container">
+        <div id="video-container">
+            <iframe id="video-iframe" src="" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+
+        <div id="text-content"></div>
+
+        <ul class="link-list" id="link-list"></ul>
     </div>
 
-    <a id="drive-link" href="" target="_blank">Open in Google Drive</a>
 
     <script>
-        const memeImage = document.getElementById('meme-image');
-        const memeText = document.getElementById('meme-text');
-        const driveLink = document.getElementById('drive-link');
+        const videoIframe = document.getElementById('video-iframe');
+        const textContent = document.getElementById('text-content');
+        const linkList = document.getElementById('link-list');
 
-        // Sample data - replace with your actual data fetching method
-        const memeData = fetch('meme_data.json') // Path to your JSON file
-          .then(response => response.json())
-          .then(data => {
-                memeImage.src = data.imageUrl;
-                memeText.textContent = data.text;
-                driveLink.href = data.driveUrl;
+        function loadContent(filename, element) {
+            fetch(filename)
+                .then(response => response.text())
+                .then(data => {
+                    element.innerHTML = data; // Set innerHTML for paragraphs and links
+                })
+                .catch(error => console.error(`Error loading ${filename}:`, error));
+        }
+
+        // Load YouTube ID
+        fetch('youtube_id.txt')
+            .then(response => response.text())
+            .then(youtubeId => {
+                videoIframe.src = `https://www.youtube.com/embed/$${youtubeId.trim()}`; // Trim whitespace
             })
-          .catch(error => console.error('Error fetching data:', error));
+            .catch(error => console.error('Error loading youtube_id.txt:', error));
 
-        // Set the content
-        memeImage.src = memeData.imageUrl;
-        memeText.textContent = memeData.text;
-        driveLink.href = memeData.driveUrl;
+        // Load text paragraphs
+        loadContent('text_paragraphs.txt', textContent);
+
+        // Load links
+        fetch('links.txt')
+            .then(response => response.text())
+            .then(linksData => {
+                const links = linksData.split('\n').filter(link => link.trim() !== ""); // Split into lines and remove empty lines
+                links.forEach(link => {
+                    const parts = link.split('|'); // Split into URL and text
+                    if (parts.length === 2) {
+                        const url = parts[0].trim();
+                        const text = parts[1].trim();
+                        const listItem = document.createElement('li');
+                        const linkElement = document.createElement('a');
+                        linkElement.href = url;
+                        linkElement.target = "_blank"; // Open in new tab
+                        linkElement.textContent = text;
+                        listItem.appendChild(linkElement);
+                        linkList.appendChild(listItem);
+                    }
+                });
+            })
+            .catch(error => console.error('Error loading links.txt:', error));
 
     </script>
 
